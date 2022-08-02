@@ -1,7 +1,18 @@
 {
   "name": "self-driving-car",
   "version": "0.0.0",
-  "description": "",
+  "private": true,
+  "description": "A self-driving car simulation",
+  "author": "Andrew X. Shah",
+  "license": "MIT",
+  "engines": {
+    "node": "^16"
+  },
+  "packageManager": "pnpm@7.8.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kito0/self-driving-car.git"
+  },
   "scripts": {
     "start": "vite",
     "dev": "vite",
@@ -11,9 +22,8 @@
     "lint-staged": "lint-staged",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,scss}\"",
     "prepare": "husky install",
-    "semantic-release": "semantic-release"
+    "release": "semantic-release"
   },
-  "license": "MIT",
   "dependencies": {
     "solid-js": "^1.4.7"
   },
