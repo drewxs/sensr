@@ -1,0 +1,30 @@
+# dependencies
+node_modules
+
+# testing
+coverage
+
+# production
+build
+dist
+
+# misc
+.DS_Store
+*.pem
+
+# cache
+cache
+.dccache
+
+# debug
+*.log*
+
+# env
+*.env.*
+!*.example
+
+# typescript
+*.tsbuildinfo
+
+# config
+!/*.js
