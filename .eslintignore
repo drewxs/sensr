@@ -25,6 +25,3 @@ cache
 
 # typescript
 *.tsbuildinfo
-
-# config
-!/*.js
