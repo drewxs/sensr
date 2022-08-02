@@ -18,7 +18,7 @@ export class Car {
     this.controls = new Controls();
 
     this.x = x;
-    this.y = x;
+    this.y = y;
     this.width = width;
     this.height = height;
 
