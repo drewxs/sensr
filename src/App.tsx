@@ -1,18 +1,33 @@
 import { Component, onMount } from 'solid-js';
 
-import { Car } from './@types/car';
+import { Car, Road } from 'types';
 
 const App: Component = () => {
   let canvas: HTMLCanvasElement;
 
   onMount(() => {
+    const laneCount = 5;
     const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
-    const car = new Car(100, 100, 30, 50);
+    const road = new Road(canvas.width / 2, canvas.width * 0.9);
+    const car = new Car(
+      road.getLaneCenter(Math.floor(laneCount / 2)),
+      100,
+      30,
+      50
+    );
 
     const animate = () => {
-      canvas.height = window.innerHeight;
       car.update();
+
+      canvas.height = window.innerHeight;
+
+      ctx.save();
+      ctx.translate(0, -car.y + canvas.height * 0.7);
+
+      road.draw(ctx);
       car.draw(ctx);
+
+      ctx.restore();
       requestAnimationFrame(animate);
     };
 

@@ -1,4 +1,4 @@
-import { Controls } from './controls';
+import { Controls } from 'types';
 
 export class Car {
   controls: Controls;
@@ -32,6 +32,10 @@ export class Car {
   }
 
   update() {
+    this.#move();
+  }
+
+  #move() {
     // Update speed by acceleration
     if (this.controls.forward) {
       this.speed += this.acceleration;
