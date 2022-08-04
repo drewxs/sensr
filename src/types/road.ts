@@ -34,7 +34,13 @@ export class Road {
     ];
   }
 
-  getLaneCenter(laneIdx: number) {
+  /**
+   * Returns the x position of a lane given the lane index.
+   *
+   * @param laneIdx
+   * @returns center position
+   */
+  getLaneCenter(laneIdx: number): number {
     const laneWidth = this.width / this.laneCount;
     return (
       this.left +
@@ -43,7 +49,12 @@ export class Road {
     );
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  /**
+   * Draw road.
+   *
+   * @param ctx - canvas context
+   */
+  draw(ctx: CanvasRenderingContext2D): void {
     ctx.lineWidth = 7;
     ctx.strokeStyle = 'white';
 

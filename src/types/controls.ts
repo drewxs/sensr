@@ -10,11 +10,14 @@ export class Controls {
     this.forward = false;
     this.reverse = false;
 
-    this.#addKeyboardListeners();
+    this.addKeyboardListeners();
   }
 
-  #addKeyboardListeners() {
-    document.onkeydown = (e) => {
+  /**
+   * Add keyboard listeners for car controls.
+   */
+  addKeyboardListeners(): void {
+    document.onkeydown = (e): void => {
       switch (e.key) {
         case 'ArrowLeft':
           this.left = true;
@@ -31,7 +34,7 @@ export class Controls {
       }
     };
 
-    document.onkeyup = (e) => {
+    document.onkeyup = (e): void => {
       switch (e.key) {
         case 'ArrowLeft':
           this.left = false;
