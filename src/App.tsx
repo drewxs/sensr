@@ -17,7 +17,7 @@ const App: Component = () => {
     );
 
     const animate = () => {
-      car.update();
+      car.update(road.borders);
 
       canvas.height = window.innerHeight;
 

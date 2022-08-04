@@ -1,7 +1,6 @@
-import { Controls } from 'types';
+import { Controls, Position, Sensor } from 'types';
 
 export class Car {
-  controls: Controls;
   x: number;
   y: number;
   width: number;
@@ -12,11 +11,10 @@ export class Car {
   friction: number;
   angle: number;
   rotationSpeed: number;
-  flip: number;
+  sensor: Sensor;
+  controls: Controls;
 
   constructor(x: number, y: number, width: number, height: number) {
-    this.controls = new Controls();
-
     this.x = x;
     this.y = y;
     this.width = width;
@@ -28,14 +26,25 @@ export class Car {
     this.friction = 0.075;
     this.angle = 0;
     this.rotationSpeed = 0.02;
-    this.flip = 1;
+
+    this.sensor = new Sensor(this);
+    this.controls = new Controls();
   }
 
-  update() {
-    this.#move();
+  /**
+   * Update positions and sensors.
+   *
+   * @param roadBorders - borders used for collision detection
+   */
+  update(roadBorders: [Position, Position][]): void {
+    this.move();
+    this.sensor.update(roadBorders);
   }
 
-  #move() {
+  /**
+   * Update car position.
+   */
+  move(): void {
     // Update speed by acceleration
     if (this.controls.forward) {
       this.speed += this.acceleration;
@@ -82,7 +91,12 @@ export class Car {
     this.y -= Math.cos(this.angle) * this.speed;
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  /**
+   * Draw car.
+   *
+   * @param ctx - canvas context
+   */
+  draw(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(-this.angle);
@@ -92,5 +106,7 @@ export class Car {
     ctx.fill();
 
     ctx.restore();
+
+    this.sensor.draw(ctx);
   }
 }
