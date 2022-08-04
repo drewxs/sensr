@@ -1,4 +1,4 @@
-# Self-Driving Car
+# Sensr
 
 ## Prerequisites
 
@@ -29,11 +29,12 @@ In the project directory, you can run:
 
 ```bash
 $ pnpm dev
+```
 
 or
 
+```bash
 $ pnpm start
-
 ```
 
 Runs the app in the development mode.<br>
