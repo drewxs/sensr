@@ -24,10 +24,10 @@ export class Road {
     this.top = -INF;
     this.bottom = INF;
 
-    const topLeft: Position = { x: this.left, y: this.top };
-    const topRight: Position = { x: this.right, y: this.top };
-    const bottomLeft: Position = { x: this.left, y: this.bottom };
-    const bottomRight: Position = { x: this.right, y: this.bottom };
+    const topLeft = new Position(this.left, this.top);
+    const topRight = new Position(this.right, this.top);
+    const bottomLeft = new Position(this.left, this.bottom);
+    const bottomRight = new Position(this.right, this.bottom);
     this.borders = [
       [topLeft, bottomLeft],
       [topRight, bottomRight],
