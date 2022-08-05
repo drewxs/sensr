@@ -1,6 +1,7 @@
 :root {
-  --color-light-grey: #757575;
-  --color-dark-grey: #575757;
+  --color-light-grey: #575757;
+  --color-dark-grey: #2c2c2c;
+  --color-black: #080808;
 }
 
 body {
@@ -10,7 +11,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
-  background-color: var(--color-dark-grey);
+  background-color: var(--color-black);
   text-align: center;
   overflow: hidden;
 }
