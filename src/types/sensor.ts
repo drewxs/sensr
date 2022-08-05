@@ -6,13 +6,13 @@ export class Sensor {
   rayCount: number;
   rayLength: number;
   raySpread: number;
-  rays: [Position, Position][];
+  rays: Position[][];
   readings: Contact[];
 
   constructor(car: Car) {
     this.car = car;
     this.rayCount = 4;
-    this.rayLength = 100;
+    this.rayLength = 150;
     this.raySpread = Math.PI / 2;
 
     this.rays = [];
@@ -22,9 +22,9 @@ export class Sensor {
   /**
    * Update rays and readings.
    *
-   * @param roadBorders - border matrix
+   * @param roadBorders - road boundaries
    */
-  update(roadBorders: [Position, Position][]): void {
+  update(roadBorders: Position[][]): void {
     this.castRays();
     this.readings = [];
 
@@ -38,7 +38,7 @@ export class Sensor {
    * Get reading position of contact with border if any.
    *
    * @param ray - ray start and end position
-   * @param roadBoarders - border matrix
+   * @param roadBoarders - road boundaries
    * @returns position of contact if it exists
    */
   getReading(ray: Position[], roadBoarders: Position[][]): Contact | null {

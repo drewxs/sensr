@@ -11,7 +11,7 @@ export class Road {
   right: number;
   top: number;
   bottom: number;
-  borders: [Position, Position][];
+  borders: Position[][];
 
   constructor(x: number, width: number, laneCount: number = 4) {
     this.x = x;
@@ -56,7 +56,7 @@ export class Road {
    */
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.lineWidth = 7;
-    ctx.strokeStyle = 'white';
+    ctx.strokeStyle = '#f0f0f0';
 
     for (let i = 1; i <= this.laneCount - 1; i++) {
       const x = lerp(this.left, this.right, i / this.laneCount);

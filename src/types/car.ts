@@ -1,4 +1,5 @@
 import { Controls, Position, Sensor } from 'types';
+import { linesIntersect } from 'utils';
 
 export class Car {
   x: number;
@@ -13,6 +14,8 @@ export class Car {
   rotationSpeed: number;
   sensor: Sensor;
   controls: Controls;
+  shape: Position[];
+  damaged: boolean;
 
   constructor(x: number, y: number, width: number, height: number) {
     this.x = x;
@@ -26,6 +29,8 @@ export class Car {
     this.friction = 0.075;
     this.angle = 0;
     this.rotationSpeed = 0.02;
+    this.shape = this.createShape();
+    this.damaged = false;
 
     this.sensor = new Sensor(this);
     this.controls = new Controls();
@@ -34,11 +39,68 @@ export class Car {
   /**
    * Update positions and sensors.
    *
-   * @param roadBorders - borders used for collision detection
+   * @param roadBorders - road boundaries
    */
-  update(roadBorders: [Position, Position][]): void {
-    this.move();
+  update(roadBorders: Position[][]): void {
+    if (!this.damaged) {
+      this.move();
+      this.shape = this.createShape();
+      this.damaged = this.assessDamage(roadBorders);
+    }
     this.sensor.update(roadBorders);
+  }
+
+  /**
+   * Checks for collision with road borders.
+   *
+   * @param roadBorders - road boundaries
+   * @returns whether the car is damaged or not
+   */
+  assessDamage(roadBorders: Position[][]): boolean {
+    for (let i: number = 0; i < roadBorders.length; i++) {
+      if (linesIntersect(this.shape, roadBorders[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Create vertexes for car shape.
+   *
+   * @returns position matrix of vertices
+   */
+  createShape(): Position[] {
+    const points: Position[] = [];
+    const radius: number = Math.hypot(this.width, this.height) / 2;
+    const alpha: number = Math.atan2(this.width, this.height);
+
+    points.push(
+      new Position(
+        this.x - Math.sin(this.angle - alpha) * radius,
+        this.y - Math.cos(this.angle - alpha) * radius
+      )
+    );
+    points.push(
+      new Position(
+        this.x - Math.sin(this.angle + alpha) * radius,
+        this.y - Math.cos(this.angle + alpha) * radius
+      )
+    );
+    points.push(
+      new Position(
+        this.x - Math.sin(Math.PI + this.angle - alpha) * radius,
+        this.y - Math.cos(Math.PI + this.angle - alpha) * radius
+      )
+    );
+    points.push(
+      new Position(
+        this.x - Math.sin(Math.PI + this.angle + alpha) * radius,
+        this.y - Math.cos(Math.PI + this.angle + alpha) * radius
+      )
+    );
+
+    return points;
   }
 
   /**
@@ -97,15 +159,14 @@ export class Car {
    * @param ctx - canvas context
    */
   draw(ctx: CanvasRenderingContext2D): void {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(-this.angle);
+    ctx.fillStyle = this.damaged ? '#2c2c2c' : '#080808';
 
     ctx.beginPath();
-    ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
+    ctx.moveTo(this.shape[0].x, this.shape[0].y);
+    for (let i: number = 0; i < this.shape.length; i++) {
+      ctx.lineTo(this.shape[i].x, this.shape[i].y);
+    }
     ctx.fill();
-
-    ctx.restore();
 
     this.sensor.draw(ctx);
   }
