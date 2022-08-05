@@ -4,13 +4,20 @@ export class Controls {
   forward: boolean;
   reverse: boolean;
 
-  constructor() {
+  constructor(type: string) {
     this.left = false;
     this.right = false;
     this.forward = false;
     this.reverse = false;
 
-    this.addKeyboardListeners();
+    switch (type) {
+      case 'USER':
+        this.addKeyboardListeners();
+        break;
+      case 'NPC':
+        this.forward = true;
+        break;
+    }
   }
 
   /**

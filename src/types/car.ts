@@ -1,6 +1,11 @@
 import { Controls, Position, Sensor } from 'types';
 import { linesIntersect } from 'utils';
 
+const ACCELERATION: number = 0.1;
+const MAX_SPEED: number = 4;
+const FRICTION: number = 0.05;
+const ROTATION_SPEED: number = 0.015;
+
 export class Car {
   x: number;
   y: number;
@@ -12,28 +17,37 @@ export class Car {
   friction: number;
   angle: number;
   rotationSpeed: number;
-  sensor: Sensor;
+  sensor: Sensor | null;
   controls: Controls;
   shape: Position[];
   damaged: boolean;
 
-  constructor(x: number, y: number, width: number, height: number) {
+  constructor(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    controlType: string,
+    maxSpeed: number = MAX_SPEED
+  ) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
 
     this.speed = 0;
-    this.acceleration = 0.15;
-    this.maxSpeed = 4;
-    this.friction = 0.075;
+    this.acceleration = ACCELERATION;
+    this.maxSpeed = maxSpeed;
+    this.friction = FRICTION;
     this.angle = 0;
-    this.rotationSpeed = 0.02;
+    this.rotationSpeed = ROTATION_SPEED;
     this.shape = this.createShape();
     this.damaged = false;
 
-    this.sensor = new Sensor(this);
-    this.controls = new Controls();
+    const isUser = controlType === 'USER';
+    this.sensor = isUser ? new Sensor(this) : null;
+
+    this.controls = new Controls(controlType);
   }
 
   /**
@@ -41,13 +55,13 @@ export class Car {
    *
    * @param roadBorders - road boundaries
    */
-  update(roadBorders: Position[][]): void {
+  update(roadBorders: Position[][], traffic: Car[] = []): void {
     if (!this.damaged) {
       this.move();
       this.shape = this.createShape();
-      this.damaged = this.assessDamage(roadBorders);
+      this.damaged = this.assessDamage(roadBorders, traffic);
     }
-    this.sensor.update(roadBorders);
+    this.sensor?.update(roadBorders, traffic);
   }
 
   /**
@@ -56,9 +70,14 @@ export class Car {
    * @param roadBorders - road boundaries
    * @returns whether the car is damaged or not
    */
-  assessDamage(roadBorders: Position[][]): boolean {
+  assessDamage(roadBorders: Position[][], traffic: Car[]): boolean {
     for (let i: number = 0; i < roadBorders.length; i++) {
       if (linesIntersect(this.shape, roadBorders[i])) {
+        return true;
+      }
+    }
+    for (let i: number = 0; i < traffic.length; i++) {
+      if (linesIntersect(this.shape, traffic[i].shape)) {
         return true;
       }
     }
@@ -158,8 +177,8 @@ export class Car {
    *
    * @param ctx - canvas context
    */
-  draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = this.damaged ? '#2c2c2c' : '#080808';
+  draw(ctx: CanvasRenderingContext2D, color: string): void {
+    ctx.fillStyle = this.damaged ? '#2c2c2c' : color;
 
     ctx.beginPath();
     ctx.moveTo(this.shape[0].x, this.shape[0].y);
@@ -168,6 +187,6 @@ export class Car {
     }
     ctx.fill();
 
-    this.sensor.draw(ctx);
+    this.sensor?.draw(ctx);
   }
 }

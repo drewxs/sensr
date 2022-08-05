@@ -24,12 +24,12 @@ export class Sensor {
    *
    * @param roadBorders - road boundaries
    */
-  update(roadBorders: Position[][]): void {
+  update(roadBorders: Position[][], traffic: Car[]): void {
     this.castRays();
     this.readings = [];
 
     for (let i = 0; i < this.rays.length; i++) {
-      const reading = this.getReading(this.rays[i], roadBorders)!;
+      const reading = this.getReading(this.rays[i], roadBorders, traffic)!;
       this.readings.push(reading);
     }
   }
@@ -41,27 +41,46 @@ export class Sensor {
    * @param roadBoarders - road boundaries
    * @returns position of contact if it exists
    */
-  getReading(ray: Position[], roadBoarders: Position[][]): Contact | null {
-    const contacts: Contact[] = [];
+  getReading(
+    ray: Position[],
+    roadBoarders: Position[][],
+    traffic: Car[]
+  ): Contact | null {
+    const intersections: Contact[] = [];
 
     for (let i = 0; i < roadBoarders.length; i++) {
-      const contact: Contact = getIntersection(
+      const intersection: Contact = getIntersection(
         ray[0],
         ray[1],
         roadBoarders[i][0],
         roadBoarders[i][1]
       )!;
-      if (contact) {
-        contacts.push(contact);
+      if (intersection) {
+        intersections.push(intersection);
       }
     }
 
-    if (contacts.length === 0) {
+    for (let i: number = 0; i < traffic.length; i++) {
+      const shape = traffic[i].shape;
+      for (let j: number = 0; j < shape.length; j++) {
+        const intersection = getIntersection(
+          ray[0],
+          ray[1],
+          shape[j],
+          shape[(j + 1) % shape.length]
+        );
+        if (intersection) {
+          intersections.push(intersection);
+        }
+      }
+    }
+
+    if (intersections.length === 0) {
       return null;
     } else {
-      const offsets = contacts.map((e) => e.offset);
+      const offsets = intersections.map((e) => e.offset);
       const minOffset = Math.min(...offsets);
-      return contacts.find((e) => e.offset === minOffset) ?? null;
+      return intersections.find((e) => e.offset === minOffset) ?? null;
     }
   }
 

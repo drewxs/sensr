@@ -55,7 +55,7 @@ export class Road {
    * @param ctx - canvas context
    */
   draw(ctx: CanvasRenderingContext2D): void {
-    ctx.lineWidth = 7;
+    ctx.lineWidth = 3;
     ctx.strokeStyle = '#f0f0f0';
 
     for (let i = 1; i <= this.laneCount - 1; i++) {
@@ -69,11 +69,11 @@ export class Road {
     }
 
     ctx.setLineDash([]);
-    this.borders.forEach((border) => {
+    for (let i: number = 0; i < this.borders.length; i++) {
       ctx.beginPath();
-      ctx.moveTo(border[0].x, border[0].y);
-      ctx.lineTo(border[1].x, border[1].y);
+      ctx.moveTo(this.borders[i][0].x, this.borders[i][0].y);
+      ctx.lineTo(this.borders[i][1].x, this.borders[i][1].y);
       ctx.stroke();
-    });
+    }
   }
 }
