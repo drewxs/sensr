@@ -1,5 +1,8 @@
 # Sensr
 
+![codeql-analysis](https://github.com/kito0/sensr/actions/workflows/codeql-analysis.yml/badge.svg)
+![release](https://github.com/kito0/sensr/actions/workflows/release.yml/badge.svg)
+
 ## Prerequisites
 
 This project requires NodeJS (version 16 or later) and NPM.
