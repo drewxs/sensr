@@ -16,6 +16,10 @@ body {
   overflow: hidden;
 }
 
-canvas {
+#carCanvas {
   background-color: var(--color-light-grey);
+}
+
+#networkCanvas {
+  background-color: black;
 }

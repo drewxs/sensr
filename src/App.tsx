@@ -1,6 +1,6 @@
 import { Component, onMount } from 'solid-js';
 
-import { Car, Road } from 'types';
+import { Car, ControlType, Road } from 'types';
 
 const LANE_COUNT = 8;
 const LANE_WIDTH = 50;
@@ -9,31 +9,42 @@ const USER_COLOR = '#080808';
 const NPC_COLOR = '#580000';
 
 const App: Component = () => {
-  let canvas: HTMLCanvasElement;
+  let carCanvas: HTMLCanvasElement;
+  let networkCanvas: HTMLCanvasElement;
 
   onMount(() => {
-    const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
-    const road = new Road(canvas.width / 2, canvas.width * 0.9, LANE_COUNT);
+    const carCtx: CanvasRenderingContext2D = carCanvas.getContext('2d')!;
+    const networkCtx: CanvasRenderingContext2D = carCanvas.getContext('2d')!;
+
+    const road = new Road(
+      carCanvas.width / 2,
+      carCanvas.width * 0.9,
+      LANE_COUNT
+    );
     const initialPosition: number = road.getLaneCenter(
       Math.floor(LANE_COUNT / 2)
     );
-    const car = new Car(initialPosition, 100, 30, 50, 'USER');
-    const traffic: Car[] = [new Car(initialPosition, 0, 30, 50, 'NPC', 2)];
+    const car = new Car(initialPosition, 100, 30, 50, ControlType.AI);
+    const traffic: Car[] = [
+      new Car(initialPosition, 0, 30, 50, ControlType.NPC, 2),
+    ];
 
     const animate = () => {
       traffic.forEach((x) => x.update(road.borders));
       car.update(road.borders, traffic);
 
-      canvas.height = window.innerHeight;
+      carCanvas.height = window.innerHeight;
+      networkCanvas.height = window.innerHeight;
 
-      ctx.save();
-      ctx.translate(0, -car.y + canvas.height * 0.7);
+      carCtx.save();
+      carCtx.translate(0, -car.y + carCanvas.height * 0.7);
 
-      road.draw(ctx);
-      traffic.forEach((x) => x.draw(ctx, NPC_COLOR));
-      car.draw(ctx, USER_COLOR);
+      road.draw(carCtx);
+      traffic.forEach((x) => x.draw(carCtx, NPC_COLOR));
+      car.draw(carCtx, USER_COLOR);
 
-      ctx.restore();
+      carCtx.restore();
+
       requestAnimationFrame(animate);
     };
 
@@ -42,7 +53,12 @@ const App: Component = () => {
 
   return (
     <>
-      <canvas ref={canvas!} width={ROAD_WIDTH} />
+      <canvas ref={carCanvas!} id='carCanvas' width={ROAD_WIDTH} />
+      <canvas
+        ref={networkCanvas!}
+        id='networkCanvas'
+        width={ROAD_WIDTH * 1.5}
+      />
     </>
   );
 };

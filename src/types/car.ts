@@ -1,8 +1,8 @@
-import { Controls, Position, Sensor } from 'types';
+import { Controls, ControlType, NeuralNetwork, Position, Sensor } from 'types';
 import { linesIntersect } from 'utils';
 
 const ACCELERATION: number = 0.1;
-const MAX_SPEED: number = 4;
+const MAX_SPEED: number = 3;
 const FRICTION: number = 0.05;
 const ROTATION_SPEED: number = 0.015;
 
@@ -21,13 +21,15 @@ export class Car {
   controls: Controls;
   shape: Position[];
   damaged: boolean;
+  network: NeuralNetwork | null;
+  useNetwork: boolean;
 
   constructor(
     x: number,
     y: number,
     width: number,
     height: number,
-    controlType: string,
+    controlType: ControlType,
     maxSpeed: number = MAX_SPEED
   ) {
     this.x = x;
@@ -44,8 +46,15 @@ export class Car {
     this.shape = this.createShape();
     this.damaged = false;
 
-    const isUser = controlType === 'USER';
-    this.sensor = isUser ? new Sensor(this) : null;
+    this.useNetwork = controlType === ControlType.AI;
+
+    if (controlType !== ControlType.NPC) {
+      this.sensor = new Sensor(this);
+      this.network = new NeuralNetwork([this.sensor.rayCount, 10, 4]);
+    } else {
+      this.sensor = null;
+      this.network = null;
+    }
 
     this.controls = new Controls(controlType);
   }
@@ -61,7 +70,20 @@ export class Car {
       this.shape = this.createShape();
       this.damaged = this.assessDamage(roadBorders, traffic);
     }
-    this.sensor?.update(roadBorders, traffic);
+    if (this.sensor) {
+      this.sensor.update(roadBorders, traffic);
+      const offsets = this.sensor.readings.map((s) =>
+        s === null ? 0 : 1 - s.offset
+      );
+      const outputs = NeuralNetwork.feedForward(offsets, this.network!);
+
+      if (this.useNetwork) {
+        this.controls.left = Boolean(outputs[0]);
+        this.controls.right = Boolean(outputs[1]);
+        this.controls.forward = Boolean(outputs[2]);
+        this.controls.reverse = Boolean(outputs[3]);
+      }
+    }
   }
 
   /**
@@ -76,11 +98,13 @@ export class Car {
         return true;
       }
     }
+
     for (let i: number = 0; i < traffic.length; i++) {
       if (linesIntersect(this.shape, traffic[i].shape)) {
         return true;
       }
     }
+
     return false;
   }
 
