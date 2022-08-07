@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/kito0/self-driving-car/compare/v1.4.0...v1.5.0) (2022-08-07)
+
+
+### Features
+
+* create base neural network ([5ca60e5](https://github.com/kito0/self-driving-car/commit/5ca60e5145aaf26c2c4a458edefce4f345a24117))
+
 ## [1.4.0](https://github.com/kito0/self-driving-car/compare/v1.3.0...v1.4.0) (2022-08-06)
 
 
