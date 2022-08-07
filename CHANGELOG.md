@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/kito0/self-driving-car/compare/v1.3.0...v1.4.0) (2022-08-06)
+
+
+### Features
+
+* create sigmoid function ([353ae73](https://github.com/kito0/self-driving-car/commit/353ae7344e2d2e66887a1561b7717c9e9d56ea75))
+
 ## [1.3.0](https://github.com/kito0/self-driving-car/compare/v1.2.0...v1.3.0) (2022-08-05)
 
 
