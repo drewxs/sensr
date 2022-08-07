@@ -1,6 +1,9 @@
 import { Car, Contact, Position } from 'types';
 import { getIntersection, lerp } from 'utils';
 
+const RAY_COUNT = 5;
+const RAY_LENGTH = 150;
+
 export class Sensor {
   car: Car;
   rayCount: number;
@@ -11,8 +14,8 @@ export class Sensor {
 
   constructor(car: Car) {
     this.car = car;
-    this.rayCount = 4;
-    this.rayLength = 150;
+    this.rayCount = RAY_COUNT;
+    this.rayLength = RAY_LENGTH;
     this.raySpread = Math.PI / 2;
 
     this.rays = [];

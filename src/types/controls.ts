@@ -1,20 +1,26 @@
+export enum ControlType {
+  USER = 'USER',
+  NPC = 'NPC',
+  AI = 'AI',
+}
+
 export class Controls {
   left: boolean;
   right: boolean;
   forward: boolean;
   reverse: boolean;
 
-  constructor(type: string) {
+  constructor(type: ControlType) {
     this.left = false;
     this.right = false;
     this.forward = false;
     this.reverse = false;
 
     switch (type) {
-      case 'USER':
+      case ControlType.USER:
         this.addKeyboardListeners();
         break;
-      case 'NPC':
+      case ControlType.NPC:
         this.forward = true;
         break;
     }
