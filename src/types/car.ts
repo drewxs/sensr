@@ -204,7 +204,11 @@ export class Car {
    *
    * @param ctx - canvas context
    */
-  draw(ctx: CanvasRenderingContext2D, color: string): void {
+  draw(
+    ctx: CanvasRenderingContext2D,
+    color: string,
+    drawSensor: boolean = false
+  ): void {
     ctx.fillStyle = this.damaged ? '#2c2c2c' : color;
 
     ctx.beginPath();
@@ -214,6 +218,8 @@ export class Car {
     }
     ctx.fill();
 
-    this.sensor?.draw(ctx);
+    if (this.sensor && drawSensor) {
+      this.sensor.draw(ctx);
+    }
   }
 }

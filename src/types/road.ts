@@ -1,8 +1,8 @@
 import { Position } from 'types';
 import { lerp } from 'utils';
 
-const INF = 1000000;
-
+const INF: number = 1000000;
+const ROAD_BORDER_COLOR: string = '#f0f0f0';
 export class Road {
   x: number;
   width: number;
@@ -56,7 +56,7 @@ export class Road {
    */
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.lineWidth = 3;
-    ctx.strokeStyle = '#f0f0f0';
+    ctx.strokeStyle = ROAD_BORDER_COLOR;
 
     for (let i = 1; i <= this.laneCount - 1; i++) {
       const x = lerp(this.left, this.right, i / this.laneCount);

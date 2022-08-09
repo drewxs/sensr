@@ -1,7 +1,8 @@
 :root {
-  --color-light-grey: #575757;
+  --color-road: #485152;
   --color-dark-grey: #2c2c2c;
   --color-black: #080808;
+  --color-primary: #47a2a6;
 }
 
 body {
@@ -12,14 +13,35 @@ body {
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   background-color: var(--color-black);
-  text-align: center;
   overflow: hidden;
 }
-
-#carCanvas {
-  background-color: var(--color-light-grey);
+button {
+  font-size: 2rem;
+  background-color: transparent;
+  border-radius: 4px;
+  padding: 4px;
+  margin: 2px;
+  cursor: pointer;
+  transition: background-color 200ms ease;
+}
+button:hover {
+  background-color: var(--color-primary);
 }
 
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#options {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
+}
+#carCanvas {
+  background-color: var(--color-road);
+}
 #networkCanvas {
   background-color: black;
 }
