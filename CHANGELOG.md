@@ -1,3 +1,10 @@
+## [1.6.0](https://github.com/kito0/self-driving-car/compare/v1.5.0...v1.6.0) (2022-08-09)
+
+
+### Features
+
+* create neural network visualizer ([e733a52](https://github.com/kito0/self-driving-car/commit/e733a5273c5f5a59e1a1469a7ed20a02dd419f1e))
+
 ## [1.5.0](https://github.com/kito0/self-driving-car/compare/v1.4.0...v1.5.0) (2022-08-07)
 
 
