@@ -1,12 +1,13 @@
 import { Component, onMount } from 'solid-js';
 
-import { Car, ControlType, Road } from 'types';
+import { Car, ControlType, Road, Visualizer } from 'types';
 
-const LANE_COUNT = 8;
-const LANE_WIDTH = 50;
-const ROAD_WIDTH = LANE_COUNT * LANE_WIDTH;
-const USER_COLOR = '#080808';
-const NPC_COLOR = '#580000';
+const LANE_COUNT: number = 8;
+const LANE_WIDTH: number = 50;
+const ROAD_WIDTH: number = LANE_COUNT * LANE_WIDTH;
+const USER_COLOR: string = '#080808';
+const NPC_COLOR: string = '#580000';
+const ANIMATION_DURATION: number = 50;
 
 const App: Component = () => {
   let carCanvas: HTMLCanvasElement;
@@ -14,7 +15,8 @@ const App: Component = () => {
 
   onMount(() => {
     const carCtx: CanvasRenderingContext2D = carCanvas.getContext('2d')!;
-    const networkCtx: CanvasRenderingContext2D = carCanvas.getContext('2d')!;
+    const networkCtx: CanvasRenderingContext2D =
+      networkCanvas.getContext('2d')!;
 
     const road = new Road(
       carCanvas.width / 2,
@@ -29,7 +31,7 @@ const App: Component = () => {
       new Car(initialPosition, 0, 30, 50, ControlType.NPC, 2),
     ];
 
-    const animate = () => {
+    const animate = (time: number = ANIMATION_DURATION) => {
       traffic.forEach((x) => x.update(road.borders));
       car.update(road.borders, traffic);
 
@@ -45,6 +47,8 @@ const App: Component = () => {
 
       carCtx.restore();
 
+      networkCtx.lineDashOffset = -time / 50;
+      Visualizer.drawNetwork(networkCtx, car.network!);
       requestAnimationFrame(animate);
     };
 

@@ -72,10 +72,13 @@ export class Car {
     }
     if (this.sensor) {
       this.sensor.update(roadBorders, traffic);
-      const offsets = this.sensor.readings.map((s) =>
+      const offsets: number[] = this.sensor.readings.map((s) =>
         s === null ? 0 : 1 - s.offset
       );
-      const outputs = NeuralNetwork.feedForward(offsets, this.network!);
+      const outputs: number[] = NeuralNetwork.feedForward(
+        offsets,
+        this.network!
+      );
 
       if (this.useNetwork) {
         this.controls.left = Boolean(outputs[0]);
