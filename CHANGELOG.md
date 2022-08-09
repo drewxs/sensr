@@ -1,3 +1,10 @@
+## [1.7.0](https://github.com/kito0/self-driving-car/compare/v1.6.0...v1.7.0) (2022-08-09)
+
+
+### Features
+
+* create model save, load, and discard functions ([85e1e8d](https://github.com/kito0/self-driving-car/commit/85e1e8d16466489a36c6cc60194caaaa72063849))
+
 ## [1.6.0](https://github.com/kito0/self-driving-car/compare/v1.5.0...v1.6.0) (2022-08-09)
 
 
