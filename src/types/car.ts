@@ -6,6 +6,9 @@ const MAX_SPEED: number = 3;
 const FRICTION: number = 0.05;
 const ROTATION_SPEED: number = 0.015;
 
+const USER_COLOR: string = '#080808';
+const NPC_COLOR: string = '#580000';
+
 export class Car {
   x: number;
   y: number;
@@ -23,6 +26,8 @@ export class Car {
   damaged: boolean;
   network: NeuralNetwork | null;
   useNetwork: boolean;
+  img: HTMLImageElement;
+  mask: HTMLCanvasElement;
 
   constructor(
     x: number,
@@ -30,7 +35,8 @@ export class Car {
     width: number,
     height: number,
     controlType: ControlType,
-    maxSpeed: number = MAX_SPEED
+    maxSpeed: number = MAX_SPEED,
+    color: string = USER_COLOR
   ) {
     this.x = x;
     this.y = y;
@@ -54,9 +60,26 @@ export class Car {
     } else {
       this.sensor = null;
       this.network = null;
+      color = NPC_COLOR;
     }
 
     this.controls = new Controls(controlType);
+
+    this.img = new Image();
+    this.img.src = 'car.png';
+
+    this.mask = document.createElement('canvas');
+    this.mask.width = width;
+    this.mask.height = height;
+
+    const maskCtx = this.mask.getContext('2d')!;
+    this.img.onload = () => {
+      maskCtx.fillStyle = color;
+      maskCtx.rect(0, 0, this.width, this.height);
+      maskCtx.fill();
+      maskCtx.globalCompositeOperation = 'destination-atop';
+      maskCtx.drawImage(this.img, 0, 0, this.width, this.height);
+    };
   }
 
   /**
@@ -204,19 +227,26 @@ export class Car {
    *
    * @param ctx - canvas context
    */
-  draw(
-    ctx: CanvasRenderingContext2D,
-    color: string,
-    drawSensor: boolean = false
-  ): void {
-    ctx.fillStyle = this.damaged ? '#2c2c2c' : color;
-
-    ctx.beginPath();
-    ctx.moveTo(this.shape[0].x, this.shape[0].y);
-    for (let i: number = 0; i < this.shape.length; i++) {
-      ctx.lineTo(this.shape[i].x, this.shape[i].y);
-    }
-    ctx.fill();
+  draw(ctx: CanvasRenderingContext2D, drawSensor: boolean = false): void {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(-this.angle);
+    ctx.drawImage(
+      this.mask,
+      -this.width / 2,
+      -this.height / 2,
+      this.width,
+      this.height
+    );
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.drawImage(
+      this.img,
+      -this.width / 2,
+      -this.height / 2,
+      this.width,
+      this.height
+    );
+    ctx.restore();
 
     if (this.sensor && drawSensor) {
       this.sensor.draw(ctx);
