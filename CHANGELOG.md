@@ -1,3 +1,14 @@
+## [1.8.0](https://github.com/kito0/self-driving-car/compare/v1.7.0...v1.8.0) (2022-08-10)
+
+
+### Features
+
+* add mutate method and activation option ([0457310](https://github.com/kito0/self-driving-car/commit/0457310bed9d16d9c647f41323ead2718538b1e1))
+* create activation function types ([10c2660](https://github.com/kito0/self-driving-car/commit/10c266011a96af008414ea14ef8fc44072c7151f))
+* refactor model generation and update UI ([6729bbc](https://github.com/kito0/self-driving-car/commit/6729bbc90d5357255869d81d11c845cc2cd6b5a5))
+* update activation functions, create random util ([698fda6](https://github.com/kito0/self-driving-car/commit/698fda634df241c70aaf09bfbeca0091a5e2cd86))
+* update car graphic and draw method ([9dc2f12](https://github.com/kito0/self-driving-car/commit/9dc2f1228d7ff1a17209cdd9d51dd20eaa273880))
+
 ## [1.7.0](https://github.com/kito0/self-driving-car/compare/v1.6.0...v1.7.0) (2022-08-09)
 
 
