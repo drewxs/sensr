@@ -2,7 +2,7 @@ import { Position } from 'types';
 import { lerp } from 'utils';
 
 const INF: number = 1000000;
-const ROAD_BORDER_COLOR: string = '#f0f0f0';
+const ROAD_BORDER_COLOR: string = '#9c9c9c';
 export class Road {
   x: number;
   width: number;

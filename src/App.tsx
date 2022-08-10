@@ -1,24 +1,27 @@
-import { Component, JSXElement, onMount } from 'solid-js';
+import { Component, createSignal, JSXElement, onMount } from 'solid-js';
 
-import { Car, ControlType, Road, Visualizer } from 'types';
+import { Car, ControlType, NeuralNetwork, Road, Visualizer } from 'types';
+import { random, randomInt } from 'utils';
 
-const LANE_COUNT: number = 8;
-const LANE_WIDTH: number = 50;
+const LANE_COUNT: number = 5;
+const LANE_WIDTH: number = 60;
 const ROAD_WIDTH: number = LANE_COUNT * LANE_WIDTH;
-
-const USER_COLOR: string = '#080808';
-const USER_SHADOW_COLOR: string = '#181f25';
-const NPC_COLOR: string = '#580000';
-
-const ANIMATION_DURATION: number = 50;
 
 const CAR_WIDTH: number = 30;
 const CAR_HEIGHT: number = 50;
 const CAR_Y_OFFSET: number = 100;
+const CAR_SPEED: number = 4;
 
 const NUM_CARS: number = 100;
+const NUM_NPCS: number = NUM_CARS / 4;
+
+const ANIMATION_DURATION: number = 50;
+const MESSAGE_DURATION: number = 500;
 
 const App: Component = (): JSXElement => {
+  const [saved, setSaved] = createSignal(false);
+  const [discarded, setDiscarded] = createSignal(false);
+
   let carCanvas: HTMLCanvasElement;
   let networkCanvas: HTMLCanvasElement;
 
@@ -30,6 +33,8 @@ const App: Component = (): JSXElement => {
         'leadingNetwork',
         JSON.stringify(leadingCar.network)
       );
+      setSaved(true);
+      setTimeout(() => setSaved(false), MESSAGE_DURATION);
     } catch (err) {
       console.log(err);
     }
@@ -38,6 +43,8 @@ const App: Component = (): JSXElement => {
   const discardModel = (): void => {
     try {
       localStorage.removeItem('leadingNetwork');
+      setDiscarded(true);
+      setTimeout(() => setDiscarded(false), MESSAGE_DURATION);
     } catch (err) {
       console.log(err);
     }
@@ -66,7 +73,8 @@ const App: Component = (): JSXElement => {
             CAR_Y_OFFSET,
             CAR_WIDTH,
             CAR_HEIGHT,
-            ControlType.AI
+            ControlType.AI,
+            CAR_SPEED
           )
         );
       }
@@ -74,47 +82,32 @@ const App: Component = (): JSXElement => {
     };
 
     const cars = generateCars(NUM_CARS);
-    const traffic: Car[] = [
-      new Car(
-        road.getLaneCenter(Math.floor(Math.random() * LANE_COUNT + 1)),
-        -CAR_Y_OFFSET,
-        CAR_WIDTH,
-        CAR_HEIGHT,
-        ControlType.NPC,
-        2
-      ),
-      new Car(
-        road.getLaneCenter(Math.floor(Math.random() * LANE_COUNT + 1)),
-        -CAR_Y_OFFSET * Math.random() * LANE_COUNT,
-        CAR_WIDTH,
-        CAR_HEIGHT,
-        ControlType.NPC,
-        2
-      ),
-      new Car(
-        road.getLaneCenter(Math.floor(Math.random() * LANE_COUNT + 1)),
-        -CAR_Y_OFFSET * Math.random() * LANE_COUNT,
-        CAR_WIDTH,
-        CAR_HEIGHT,
-        ControlType.NPC,
-        2
-      ),
-      new Car(
-        road.getLaneCenter(Math.floor(Math.random() * LANE_COUNT + 1)),
-        -CAR_Y_OFFSET * Math.random() * LANE_COUNT,
-        CAR_WIDTH,
-        CAR_HEIGHT,
-        ControlType.NPC,
-        2
-      ),
-    ];
+
+    const traffic: Car[] = [];
+    for (let i: number = 0; i < NUM_NPCS; i++) {
+      traffic.push(
+        new Car(
+          road.getLaneCenter(randomInt(0, LANE_COUNT - 1)),
+          random(-CAR_Y_OFFSET / 2, -CAR_Y_OFFSET * 100),
+          CAR_WIDTH,
+          CAR_HEIGHT,
+          ControlType.NPC,
+          random(2, 4)
+        )
+      );
+    }
 
     leadingCar = cars[0];
 
     // Load saved model if it exists
     let savedModel: string | null = localStorage.getItem('leadingNetwork');
     if (savedModel) {
-      leadingCar.network = JSON.parse(savedModel);
+      for (let i: number = 0; i < cars.length; i++) {
+        cars[i].network = JSON.parse(savedModel);
+        if (i !== 0) {
+          NeuralNetwork.mutate(cars[i].network!, 0.1);
+        }
+      }
     }
 
     const animate = (time: number = ANIMATION_DURATION): void => {
@@ -131,11 +124,11 @@ const App: Component = (): JSXElement => {
       carCtx.translate(0, -leadingCar.y + carCanvas.height * 0.7);
 
       road.draw(carCtx);
-      traffic.forEach((x) => x.draw(carCtx, NPC_COLOR));
-      carCtx.globalAlpha = 0.4;
-      cars.forEach((car) => car.draw(carCtx, USER_SHADOW_COLOR));
+      traffic.forEach((x) => x.draw(carCtx));
+      carCtx.globalAlpha = 0.01;
+      cars.forEach((car) => car.draw(carCtx));
       carCtx.globalAlpha = 1;
-      leadingCar.draw(carCtx, USER_COLOR, true);
+      leadingCar.draw(carCtx, true);
 
       carCtx.restore();
 
@@ -150,14 +143,24 @@ const App: Component = (): JSXElement => {
   return (
     <>
       <canvas ref={carCanvas!} id='carCanvas' width={ROAD_WIDTH} />
-      <canvas
-        ref={networkCanvas!}
-        id='networkCanvas'
-        width={ROAD_WIDTH * 1.5}
-      />
+      <canvas ref={networkCanvas!} id='networkCanvas' width={LANE_WIDTH * 10} />
       <div id='options'>
-        <button onClick={saveModel}>💾</button>
-        <button onClick={discardModel}>🗑️</button>
+        <button onClick={saveModel}>
+          💾
+          {saved() && (
+            <div class='options-message' id='saved'>
+              Saved!
+            </div>
+          )}
+        </button>
+        <button onClick={discardModel}>
+          🗑️
+          {discarded() && (
+            <div class='options-message' id='discarded'>
+              Discarded!
+            </div>
+          )}
+        </button>
       </div>
     </>
   );

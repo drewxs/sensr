@@ -1,7 +1,7 @@
 import { Car, Contact, Position } from 'types';
 import { getIntersection, lerp } from 'utils';
 
-const RAY_COUNT = 5;
+const RAY_COUNT = 4;
 const RAY_LENGTH = 150;
 
 export class Sensor {
@@ -121,7 +121,7 @@ export class Sensor {
 
       ctx.beginPath();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = 'cyan';
+      ctx.strokeStyle = '#47a2a6';
       ctx.moveTo(this.rays[i][0].x, this.rays[i][0].y);
       ctx.lineTo(end.x, end.y);
       ctx.stroke();
