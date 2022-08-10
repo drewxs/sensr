@@ -1,4 +1,5 @@
-import { sigmoid } from 'utils';
+import { Activation } from 'types';
+import { lerp, relu, sigmoid } from 'utils';
 
 export class NeuralNetwork {
   layers: Layer[];
@@ -19,7 +20,7 @@ export class NeuralNetwork {
    * @param network - the network to feedforward
    * @returns output nodes
    */
-  static feedForward(inputs: number[], network: NeuralNetwork) {
+  static feedForward(inputs: number[], network: NeuralNetwork): number[] {
     let outputs: number[] = Layer.feedForward(inputs, network.layers[0]);
 
     for (let i: number = 0; i < network.layers.length; i++) {
@@ -28,6 +29,30 @@ export class NeuralNetwork {
 
     return outputs;
   }
+
+  /**
+   * Randomize weights and biases for all layers in a network.
+   *
+   * @param network - network to randomize
+   * @param amount - interpolant
+   */
+  static mutate = (network: NeuralNetwork, amount: number = 1): void => {
+    network.layers.forEach((layer) => {
+      for (let i: number = 0; i < layer.biases.length; i++) {
+        layer.biases[i] = lerp(layer.biases[i], Math.random() * 2 - 1, amount);
+      }
+
+      for (let i: number = 0; i < layer.weights.length; i++) {
+        for (let j: number = 0; j < layer.weights.length; j++) {
+          layer.weights[i][j] = lerp(
+            layer.weights[i][j],
+            Math.random() * 2 - 1,
+            amount
+          );
+        }
+      }
+    });
+  };
 }
 
 export class Layer {
@@ -73,7 +98,11 @@ export class Layer {
    * @param layer - input layer
    * @returns output nodes
    */
-  static feedForward(inputs: number[], layer: Layer): number[] {
+  static feedForward(
+    inputs: number[],
+    layer: Layer,
+    activation: Activation | null = null
+  ): number[] {
     for (let i: number = 0; i < layer.inputs.length; i++) {
       layer.inputs[i] = inputs[i];
     }
@@ -85,7 +114,17 @@ export class Layer {
         sum += layer.inputs[j] * layer.weights[j][i];
       }
 
-      layer.outputs[i] = sigmoid(sum + layer.biases[i]) > 0.5 ? 1 : 0;
+      switch (activation) {
+        case Activation.relu:
+          layer.outputs[i] = relu(sum + layer.biases[i]);
+          break;
+        case Activation.sigmoid:
+          layer.outputs[i] = sigmoid(sum + layer.biases[i]) > 0.5 ? 1 : 0;
+          break;
+        default:
+          layer.outputs[i] = sum > layer.biases[i] ? 1 : 0;
+          break;
+      }
     }
 
     return layer.outputs;
