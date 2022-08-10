@@ -1,3 +1,4 @@
+export { Activation } from './activation';
 export { Car } from './car';
 export { Contact } from './contact';
 export { Controls, ControlType } from './controls';
