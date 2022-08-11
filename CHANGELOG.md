@@ -1,3 +1,14 @@
+## [1.9.0](https://github.com/kito0/self-driving-car/compare/v1.8.0...v1.9.0) (2022-08-11)
+
+
+### Features
+
+* create csv parsing utilities ([7c53782](https://github.com/kito0/self-driving-car/commit/7c537829ba1d6d11617a766720ef3525a2d0b7b9))
+* create global config ([82d9a42](https://github.com/kito0/self-driving-car/commit/82d9a42ef35fbf048ff557bbdab37232364f2cb3))
+* create training dataset ([24cf3bc](https://github.com/kito0/self-driving-car/commit/24cf3bcd4d9c2f37e7d910d87f386dbcc2bfc1ac))
+* create xavier weight initialization ([7041b4e](https://github.com/kito0/self-driving-car/commit/7041b4eeaa13f663d4d9949e162c91f30d51d0d4))
+* update npc generation to use datasets instead of randomized parameters ([25311d9](https://github.com/kito0/self-driving-car/commit/25311d91931c4b47a35a7f62c8d4e92e80e91816))
+
 ## [1.8.0](https://github.com/kito0/self-driving-car/compare/v1.7.0...v1.8.0) (2022-08-10)
 
 
