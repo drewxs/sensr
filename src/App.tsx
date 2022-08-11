@@ -1,22 +1,21 @@
 import { Component, createSignal, JSXElement, onMount } from 'solid-js';
 
+import {
+  ANIMATION_DURATION,
+  CAR_HEIGHT,
+  CAR_SPEED,
+  CAR_WIDTH,
+  CAR_Y_OFFSET,
+  LANE_COUNT,
+  LANE_WIDTH,
+  MESSAGE_DURATION,
+  MUTATION_AMOUNT,
+  NUM_NETWORKS,
+  ROAD_WIDTH,
+  TRAINING_DATA,
+} from 'config';
 import { Car, ControlType, NeuralNetwork, Road, Visualizer } from 'types';
-import { random, randomInt } from 'utils';
-
-const LANE_COUNT: number = 5;
-const LANE_WIDTH: number = 60;
-const ROAD_WIDTH: number = LANE_COUNT * LANE_WIDTH;
-
-const CAR_WIDTH: number = 30;
-const CAR_HEIGHT: number = 50;
-const CAR_Y_OFFSET: number = 100;
-const CAR_SPEED: number = 4;
-
-const NUM_CARS: number = 100;
-const NUM_NPCS: number = NUM_CARS / 4;
-
-const ANIMATION_DURATION: number = 50;
-const MESSAGE_DURATION: number = 500;
+import { readCsv } from 'utils';
 
 const App: Component = (): JSXElement => {
   const [saved, setSaved] = createSignal(false);
@@ -35,6 +34,7 @@ const App: Component = (): JSXElement => {
       );
       setSaved(true);
       setTimeout(() => setSaved(false), MESSAGE_DURATION);
+      console.log('saved model');
     } catch (err) {
       console.log(err);
     }
@@ -45,8 +45,22 @@ const App: Component = (): JSXElement => {
       localStorage.removeItem('leadingNetwork');
       setDiscarded(true);
       setTimeout(() => setDiscarded(false), MESSAGE_DURATION);
+      console.log('discarded model');
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  // Load saved model if it exists
+  const loadModel = (cars: Car[]): void => {
+    let savedModel: string | null = localStorage.getItem('leadingNetwork');
+    if (savedModel) {
+      for (let i: number = 0; i < cars.length; i++) {
+        cars[i].network = JSON.parse(savedModel);
+        if (i !== 0) {
+          NeuralNetwork.mutate(cars[i].network!, MUTATION_AMOUNT);
+        }
+      }
     }
   };
 
@@ -64,6 +78,7 @@ const App: Component = (): JSXElement => {
       Math.floor(LANE_COUNT / 2)
     );
 
+    // Generate n AI cars
     const generateCars = (n: number): Car[] => {
       const cars: Car[] = [];
       for (let i: number = 0; i < n; i++) {
@@ -81,34 +96,31 @@ const App: Component = (): JSXElement => {
       return cars;
     };
 
-    const cars = generateCars(NUM_CARS);
+    const cars = generateCars(NUM_NETWORKS);
+    leadingCar = cars[0];
+    loadModel(cars);
 
+    // Generate traffic from training data
     const traffic: Car[] = [];
-    for (let i: number = 0; i < NUM_NPCS; i++) {
-      traffic.push(
-        new Car(
-          road.getLaneCenter(randomInt(0, LANE_COUNT - 1)),
-          random(-CAR_Y_OFFSET / 2, -CAR_Y_OFFSET * 100),
-          CAR_WIDTH,
-          CAR_HEIGHT,
-          ControlType.NPC,
-          random(2, 4)
+    readCsv(TRAINING_DATA).then((data) => {
+      data?.forEach((npc) =>
+        traffic.push(
+          new Car(
+            road.getLaneCenter(npc.x),
+            npc.y,
+            CAR_WIDTH,
+            CAR_HEIGHT,
+            ControlType.NPC,
+            npc.speed
+          )
         )
       );
-    }
+    });
 
-    leadingCar = cars[0];
-
-    // Load saved model if it exists
-    let savedModel: string | null = localStorage.getItem('leadingNetwork');
-    if (savedModel) {
-      for (let i: number = 0; i < cars.length; i++) {
-        cars[i].network = JSON.parse(savedModel);
-        if (i !== 0) {
-          NeuralNetwork.mutate(cars[i].network!, 0.1);
-        }
-      }
-    }
+    // Mutate leading car on an interval
+    setInterval(() => {
+      NeuralNetwork.mutate(leadingCar.network!, MUTATION_AMOUNT / 10);
+    }, 5000);
 
     const animate = (time: number = ANIMATION_DURATION): void => {
       traffic.forEach((x) => x.update(road.borders));
