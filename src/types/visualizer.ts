@@ -1,8 +1,6 @@
+import { BLACK, WHITE } from 'config';
 import { Layer, NeuralNetwork } from 'types';
 import { getRGBA, lerp } from 'utils';
-
-const BLACK: string = '#080808';
-const WHITE: string = '#f1f1f1';
 
 export class Visualizer {
   static drawNetwork(

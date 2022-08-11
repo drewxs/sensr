@@ -1,13 +1,13 @@
+import {
+  ACCELERATION,
+  FRICTION,
+  MAX_SPEED,
+  NPC_COLOR,
+  ROTATION_SPEED,
+  USER_COLOR,
+} from 'config';
 import { Controls, ControlType, NeuralNetwork, Position, Sensor } from 'types';
 import { linesIntersect } from 'utils';
-
-const ACCELERATION: number = 0.1;
-const MAX_SPEED: number = 3;
-const FRICTION: number = 0.05;
-const ROTATION_SPEED: number = 0.015;
-
-const USER_COLOR: string = '#080808';
-const NPC_COLOR: string = '#580000';
 
 export class Car {
   x: number;

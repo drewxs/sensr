@@ -1,8 +1,6 @@
+import { RAY_COUNT, RAY_LENGTH } from 'config';
 import { Car, Contact, Position } from 'types';
 import { getIntersection, lerp } from 'utils';
-
-const RAY_COUNT = 4;
-const RAY_LENGTH = 150;
 
 export class Sensor {
   car: Car;

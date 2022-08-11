@@ -110,7 +110,7 @@ export class Layer {
     for (let i: number = 0; i < layer.outputs.length; i++) {
       let sum: number = 0;
 
-      for (let j = 0; j < layer.inputs.length; j++) {
+      for (let j: number = 0; j < layer.inputs.length; j++) {
         sum += layer.inputs[j] * layer.weights[j][i];
       }
 
