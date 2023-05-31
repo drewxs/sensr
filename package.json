@@ -1,18 +1,21 @@
 {
-  "name": "self-driving-car",
+  "name": "sensr",
   "version": "1.9.0",
   "private": true,
   "description": "A self-driving car simulation",
-  "author": "Andrew X. Shah",
+  "author": "Andrew X. Shah <drewshah0@gmail.com> (https://github.com/drewxs)",
   "license": "MIT",
-  "engines": {
-    "node": "^16"
-  },
-  "packageManager": "pnpm@7.8.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kito0/self-driving-car.git"
+    "url": "https://github.com/drewxs/sensr.git"
   },
+  "engines": {
+    "node": "^18.x.x",
+    "npm": "use-pnpm",
+    "yarn": "use-pnpm",
+    "pnpm": "^8.x.x"
+  },
+  "packageManager": "pnpm@8.6.0",
   "scripts": {
     "start": "vite",
     "dev": "vite",
@@ -20,7 +23,6 @@
     "serve": "vite preview",
     "lint": "eslint --fix",
     "format": "prettier --write --cache .",
-    "preinstall": "npx only-allow pnpm",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
     "release": "semantic-release"
