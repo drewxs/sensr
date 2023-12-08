@@ -18,7 +18,6 @@ export class NeuralNetwork {
    *
    * @param inputs - input nodes
    * @param network - the network to feedforward
-   * @returns output nodes
    */
   static feedForward(inputs: number[], network: NeuralNetwork): number[] {
     let outputs: number[] = Layer.feedForward(inputs, network.layers[0]);
@@ -96,7 +95,6 @@ export class Layer {
    *
    * @param inputs - input nodes
    * @param layer - input layer
-   * @returns output nodes
    */
   static feedForward(
     inputs: number[],

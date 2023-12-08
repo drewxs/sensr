@@ -18,7 +18,6 @@ export class Road {
 
     this.left = x - width / 2;
     this.right = x + width / 2;
-
     this.top = -INF;
     this.bottom = INF;
 
@@ -26,18 +25,13 @@ export class Road {
     const topRight = new Position(this.right, this.top);
     const bottomLeft = new Position(this.left, this.bottom);
     const bottomRight = new Position(this.right, this.bottom);
+
     this.borders = [
       [topLeft, bottomLeft],
       [topRight, bottomRight],
     ];
   }
 
-  /**
-   * Returns the x position of a lane given the lane index.
-   *
-   * @param laneIdx
-   * @returns center position
-   */
   getLaneCenter(laneIdx: number): number {
     const laneWidth = this.width / this.laneCount;
     return (
@@ -47,11 +41,6 @@ export class Road {
     );
   }
 
-  /**
-   * Draw road.
-   *
-   * @param ctx - canvas context
-   */
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.lineWidth = 3;
     ctx.strokeStyle = ROAD_BORDER_COLOR;

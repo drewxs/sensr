@@ -87,7 +87,7 @@ export class Car {
    *
    * @param roadBorders - road boundaries
    */
-  update(roadBorders: Position[][], traffic: Car[] = []): void {
+  update(roadBorders: Position[][], traffic: Car[] = []) {
     if (!this.damaged) {
       this.move();
       this.shape = this.createShape();
@@ -172,9 +172,6 @@ export class Car {
     return points;
   }
 
-  /**
-   * Update car position.
-   */
   move(): void {
     // Update speed by acceleration
     if (this.controls.forward) {
@@ -222,11 +219,6 @@ export class Car {
     this.y -= Math.cos(this.angle) * this.speed;
   }
 
-  /**
-   * Draw car.
-   *
-   * @param ctx - canvas context
-   */
   draw(ctx: CanvasRenderingContext2D, drawSensor: boolean = false): void {
     ctx.save();
     ctx.translate(this.x, this.y);

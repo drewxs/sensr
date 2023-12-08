@@ -15,7 +15,6 @@ export class Sensor {
     this.rayCount = RAY_COUNT;
     this.rayLength = RAY_LENGTH;
     this.raySpread = Math.PI / 2;
-
     this.rays = [];
     this.readings = [];
   }
@@ -85,9 +84,6 @@ export class Sensor {
     }
   }
 
-  /**
-   * Generate ray data.
-   */
   castRays(): void {
     this.rays = [];
     for (let i = 0; i < this.rayCount; i++) {
@@ -108,11 +104,6 @@ export class Sensor {
     }
   }
 
-  /**
-   * Draw sensor lines.
-   *
-   * @param ctx - canvas context
-   */
   draw(ctx: CanvasRenderingContext2D): void {
     for (let i = 0; i < this.rayCount; i++) {
       let end = this.readings[i] ?? this.rays[i][1];

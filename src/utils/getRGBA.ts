@@ -1,9 +1,3 @@
-/**
- * Get RGBA value from number.
- *
- * @param value - value to convert
- * @returns RGBA value
- */
 export const getRGBA = (value: number): string => {
   const alpha: number = Math.abs(value);
   const R: number = value > 0 ? 0 : 75;

@@ -26,9 +26,6 @@ export class Controls {
     }
   }
 
-  /**
-   * Add keyboard listeners for car controls.
-   */
   addKeyboardListeners(): void {
     document.onkeydown = (e): void => {
       switch (e.key) {
